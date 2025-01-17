@@ -21,7 +21,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Определение области применения
 
 INSTALLED_APPS = [
