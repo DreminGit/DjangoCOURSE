@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+
+from django.conf.global_settings import AUTH_USER_MODEL
 from dotenv import load_dotenv
 import logging
 
@@ -31,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newsletter',
     'django_apscheduler',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -146,6 +149,19 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'  # При входе перенаправляет на данный урл
+LOGOUT_REDIRECT_URL = '/'  # При выходе перенаправляет на данный урл
+LOGIN_URL = 'users:login'
+CACHE_ENABLED = False
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('LOCATION'),
+        }
+    }
 
 # Тип поля первичного ключа по умолчанию
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
