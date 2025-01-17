@@ -87,6 +87,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Ваш email
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Ваш пароль
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -153,7 +157,9 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'  # При входе перенаправляет на данный урл
 LOGOUT_REDIRECT_URL = '/'  # При выходе перенаправляет на данный урл
 LOGIN_URL = 'users:login'
+
 CACHE_ENABLED = False
+
 if CACHE_ENABLED:
     CACHES = {
         "default": {
