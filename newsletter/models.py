@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.mail import send_mail
 
 from newsletter.utils import should_run_task
 
@@ -98,6 +99,7 @@ class Newsletter(models.Model):
         ('week', 'Раз в неделю'),
         ('month', 'Раз в месяц'),
     ]
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания'
@@ -105,20 +107,32 @@ class Newsletter(models.Model):
     scheduled_at = models.DateTimeField(
         verbose_name='Дата отправки'
     )
-
     periodicity = models.CharField(
         max_length=10,
-        choices=PERIOD_CHOICES
+        choices=PERIOD_CHOICES,
+        verbose_name='Переодичность',
     )
     last_run = models.DateTimeField(
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Последний запуск',
     )
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
-        default='created'
+        default='created',
+        verbose_name='Статус',
     )
+    message = models.ForeignKey(
+        Message,
+        on_delete=models.CASCADE,
+        verbose_name='Сообщение',
+    )
+    clients = models.ManyToManyField(
+        Client,
+        verbose_name='Клиенты',
+    )
+
 
     def __str__(self):
         return (f'ID: {self.id} Дата отправки: {self.scheduled_at} Статуc: {self.status}')
@@ -127,14 +141,10 @@ class Newsletter(models.Model):
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
 
-    def should_run(self):
-        '''Функция позволяет запускать рассылку с переодичностью в день\неделю\месяц'''
-        if self.last_run:
-            return should_run_task(self.last_run, self.periodicity)
-        return True
+def send_newsletter(newsletter):
+    subject = newsletter.message.title
+    message = newsletter.message.message
+    from_email = 'sev231613@gmail.com'  # Укажите свой email
+    recipient_list = [client.email for client in newsletter.clients.all()]  # Список email всех клиентов
 
-    def can_send(self):
-        '''Функция позволяет проверить актуальность даты. Отправляет, если выбранная дата не в прошлом.'''
-        if self.scheduled_at > timezone.now() and self.status == 'created':
-            return True
-        return False
+    send_mail(subject, message, from_email, recipient_list)

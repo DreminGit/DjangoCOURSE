@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 
 # Создайте пути внутри проекта следующим образом: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'newsletter',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,32 @@ DATABASES = {
     }
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Например, smtp.gmail.com для Gmail
+EMAIL_PORT = 587  # Обычно 587 для TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sev231613@gmail.com'  # Ваш email
+EMAIL_HOST_PASSWORD = 'mskq xcbe ugom mqmn'  # Ваш пароль
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'newsletter': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
 
 # Проверка пароля
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -120,3 +148,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
